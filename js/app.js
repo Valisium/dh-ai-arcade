@@ -2,7 +2,7 @@
    To add a game: make games/<id>.js that calls Arcade.register({...}), then add it to index.html and sw.js. */
 (function () {
   "use strict";
-  const VERSION = "Version 0.5 · 16th October 2026";
+  const VERSION = "Version 0.6 · 16th October 2026";
   const IDLE_SECONDS = 60;      // in a game: back to the landing page
   const ATTRACT_SECONDS = 30;   // on the landing page: show the scoreboard
   const BOARD_SECONDS = 20;     // on the scoreboard: back to the landing page
