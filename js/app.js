@@ -2,7 +2,7 @@
    To add a game: make games/<id>.js that calls Arcade.register({...}), then add it to index.html and sw.js. */
 (function () {
   "use strict";
-  const VERSION = "Version 0.4 · 16th October 2026";
+  const VERSION = "Version 0.5 · 16th October 2026";
   const IDLE_SECONDS = 60;      // in a game: back to the landing page
   const ATTRACT_SECONDS = 30;   // on the landing page: show the scoreboard
   const BOARD_SECONDS = 20;     // on the scoreboard: back to the landing page
@@ -63,13 +63,20 @@
     if (!s || BLOCK.some((b) => s.replace(/[^A-Z]/g, "").includes(b))) return "";
     return s;
   }
+  // A game with board.low = true ranks the lowest score first (golf). "d" (seconds, optional) breaks a tie: faster wins.
+  const lowWins = (id) => !!games.find((g) => g.id === id)?.board?.low;
+  const rankCmp = (id) => { const low = lowWins(id); return (a, b) => (low ? a.s - b.s : b.s - a.s) || (a.d ?? 1e9) - (b.d ?? 1e9) || a.t - b.t; };
   const board = {
     key: (id) => `board:${id}:${today()}`,
     list(id) { return store.get(board.key(id), []); },
-    qualifies(id, score) { const l = board.list(id); return score > 0 && (l.length < 5 || score > l[l.length - 1].s); },
-    add(id, name, score) {
+    qualifies(id, score, d) {
+      const l = board.list(id);
+      return score > 0 && (l.length < 5 || rankCmp(id)({ s: score, d, t: Date.now() }, l[l.length - 1]) < 0);
+    },
+    add(id, name, score, d) {
       const l = board.list(id), entry = { n: name, s: score, t: Date.now() };
-      l.push(entry); l.sort((a, b) => b.s - a.s || a.t - b.t);
+      if (d != null) entry.d = d;
+      l.push(entry); l.sort(rankCmp(id));
       store.set(board.key(id), l.slice(0, 5));
       return l.indexOf(entry);
     },
@@ -139,7 +146,8 @@
     return g.tally ? g.tally(store, today()) : [[stats.get()[g.id]?.plays || 0, "Played today"]];
   }
   function leaderLine() {
-    const g = games.find((x) => x.board);
+    // show the first game that has a score today (or the first game with a board, when nobody has played yet)
+    const g = games.find((x) => x.board && board.list(x.id).length) || games.find((x) => x.board);
     if (!g) return "";
     const top = board.list(g.id)[0];
     return `<button class="leader" data-board aria-label="See today's scoreboard">
