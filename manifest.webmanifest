@@ -1,0 +1,15 @@
+{
+  "name": "Digital Heroes AI Arcade",
+  "short_name": "AI Arcade",
+  "description": "Quick games about what AI is and what it can do.",
+  "start_url": "./index.html#/",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#003473",
+  "theme_color": "#003473",
+  "icons": [
+    { "src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any maskable" },
+    { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable" }
+  ]
+}
