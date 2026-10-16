@@ -1,6 +1,6 @@
 /* AI Arcade service worker: keeps every file on the iPad so the games work with no wifi.
    When you change a file, add 1 to VERSION so iPads get the new files. Add new game files to FILES. */
-const VERSION = "arcade-v0.3";
+const VERSION = "arcade-v0.4";
 const FILES = [
   "./", "./index.html", "./manifest.webmanifest", "./css/app.css", "./js/app.js",
   "./games/yours-or-mine.js", "./games/mind-the-gap-data.js", "./games/mind-the-gap.js",
